@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uma Krishna Kanth Chokkapu - Portfolio</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      min-height: 100vh;
+      padding: 1.5rem;
+      position: relative;
+    }
+    
+    .canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    
+    .carousel {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 64rem;
+      margin: 0 auto;
+      height: 100vh;
+    }
+    
+    .slide {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      position: absolute;
+      transition: transform 0.8s ease, opacity 0.8s ease;
+      transform: translateY(50px);
+      pointer-events: none;
+    }
+    
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    
+    .card {
+      background: linear-gradient(135deg, rgba(16, 24, 39, 0.8) 0%, rgba(30, 27, 75, 0.8) 100%);
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      padding: 2rem;
+      width: 90%;
+      max-width: 36rem;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Enlarged card for the second slide */
+    #slide-2 .card {
+      max-width: 48rem;
+      padding: 2.5rem;
+    }
+    
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, #f472b6 0%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    h2:after {
+      content: '';
+      position: absolute;
+      left: 25%;
+      bottom: -0.5rem;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, #f472b6 0%, #60a5fa 100%);
+      border-radius: 3px;
+    }
+    
+    p {
+      opacity: 0.9;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+      font-size: 1.1rem;
+    }
+    
+    .subtitle {
+      font-size: 1.25rem;
+      opacity: 0.8;
+      margin-top: 1rem;
+      font-weight: 400;
+    }
+    
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      text-align: left;
+      opacity: 0.9;
+      margin-top: 2rem;
+    }
+    
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .skill-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .skill-icon {
+      background: linear-gradient(135deg, #f472b6 0%, #60a5fa 100%);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .button-container {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      color: white;
+      text-decoration: none;
+      background: linear-gradient(135deg, #f472b6 0%, #60a5fa 100%);
+      transition: all 0.3s ease;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .button svg {
+      margin-right: 0.5rem;
+    }
+    
+    .navigation {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.75rem;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.7);
+      padding: 0.75rem 1.5rem;
+      border-radius: 3rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-button {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-button.active {
+      background: linear-gradient(135deg, #f472b6 0%, #60a5fa 100%);
+      transform: scale(1.2);
+    }
+    
+    .intro-content {
+      text-align: center;
+      max-width: 800px;
+    }
+    
+    .appear {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    
+    .slide-controls {
+      position: absolute;
+      bottom: 8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1rem;
+      z-index: 20;
+    }
+    
+    .control-button {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .control-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    
+    /* Profile picture styles */
+    .profile-picture {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* About section with image */
+    .about-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    .about-image {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 1rem;
+      object-fit: cover;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .about-image:hover {
+      transform: scale(1.02);
+    }
+    
+    .about-text {
+      text-align: left;
+    }
+
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 4rem;
+      }
+      
+      h2 {
+        font-size: 2.2rem;
+      }
+      
+      .skills-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .about-section {
+        flex-direction: row;
+        text-align: left;
+      }
+      
+      .about-image {
+        max-width: 250px;
+      }
+    }
+    
+    /* Particle effect */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(#ffffff, rgba(255, 255, 255, 0));
+      opacity: 0.5;
+      animation: float 8s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <div class="container">
+    <div class="canvas-container" id="canvas-container"></div>
+    
+    <div class="carousel">
+      <!-- Slide 1: Introduction -->
+      <div class="slide active" id="slide-1">
+        <div class="card">
+          <img src="/api/placeholder/180/180" alt="Profile Picture" class="profile-picture" />
+          <h1 class="appear">Uma Krishna Kanth Chokkapu</h1>
+          <p class="subtitle appear">Innovator | Entrepreneur | Ed-Tech Founder | B.Tech Student at JNTU Kakinada</p>
+        </div>
+      </div>
+      
+      <!-- Slide 2: About Me (Enlarged) -->
+      <div class="slide" id="slide-2">
+        <div class="card">
+          <h2>About Me</h2>
+          <div class="about-section">
+            <img src="/api/placeholder/300/400" alt="Uma Krishna Kanth" class="about-image" />
+            <div class="about-text">
+              <p>
+                Passionate about alternative education, student growth, and innovation. Founder of an Ed-Tech startup solving key issues in communication, mentoring, and time management. Currently pursuing B.Tech at JNTU Kakinada.
+              </p>
+              <p>
+                My journey in technology and education has equipped me with a unique perspective on solving real-world problems. I believe in building solutions that make a meaningful impact and transform how people learn and grow.
+              </p>
+              <p>
+                Through my startup, I'm working to revolutionize educational approaches and create tools that enhance the learning experience for students worldwide.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 3: Skills -->
+      <div class="slide" id="slide-3">
+        <div class="card">
+          <h2>Skills & Expertise</h2>
+          <div class="skills-grid">
+            <div class="skill-item">
+              <div class="skill-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <span>Innovation & Problem-Solving</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              </div>
+              <span>UI/UX Development</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+              </div>
+              <span>Prompt Engineering</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <span>Entrepreneurship & Leadership</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+              </div>
+              <span>Ed-Tech & SaaS Development</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              </div>
+              <span>Alternative Education Strategies</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 4: Contact -->
+      <div class="slide" id="slide-4">
+        <div class="card">
+          <h2>Let's Connect!</h2>
+          <p>I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.</p>
+          <div class="button-container">
+            <a href="mailto:ukkukk97@gmail.com" class="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              Contact
+            </a>
+            <a href="https://www.linkedin.com/in/chokkapu-uma-krishna-kanth-50a502288/" target="_blank" rel="noopener noreferrer" class="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+              LinkedIn
+            </a>
+            <a href="https://www.instagram.com/ukk.eat/?next=%2F" target="_blank" rel="noopener noreferrer" class="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              Instagram
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="navigation">
+      <button class="nav-button active" data-slide="1"></button>
+      <button class="nav-button" data-slide="2"></button>
+      <button class="nav-button" data-slide="3"></button>
+      <button class="nav-button" data-slide="4"></button>
+    </div>
+    
+    <div class="slide-controls">
+      <button class="control-button" id="prev-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="control-button" id="next-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Set up Three.js scene
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    // Create multiple fish
+    const fishCount = 5;
+    const fishes = [];
+    const colors = [0xf472b6, 0x60a5fa, 0x34d399, 0xfcd34d, 0xa78bfa];
+    
+    for (let i = 0; i < fishCount; i++) {
+      const geometry = new THREE.SphereGeometry(0.2, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ 
+        color: colors[i % colors.length],
+        transparent: true,
+        opacity: 0.7
+      });
+      const fish = new THREE.Mesh(geometry, material);
+      
+      // Random positions
+      fish.position.x = (Math.random() - 0.5) * 10;
+      fish.position.y = (Math.random() - 0.5) * 5;
+      fish.position.z = (Math.random() - 0.5) * 5;
+      
+      // Random speeds
+      fish.userData = {
+        speedX: (Math.random() - 0.5) * 0.02,
+        speedY: (Math.random() - 0.5) * 0.01,
+        speedRotation: 0.01 + Math.random() * 0.02
+      };
+      
+      scene.add(fish);
+      fishes.push(fish);
+    }
+
+    // Add light
+    const light = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(light);
+
+    // Position camera
+    camera.position.z = 5;
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      // Animate fishes
+      fishes.forEach(fish => {
+        fish.rotation.y += fish.userData.speedRotation;
+        fish.position.x += fish.userData.speedX;
+        fish.position.y += fish.userData.speedY;
+        
+        // Bounce back when hitting boundaries
+        if (Math.abs(fish.position.x) > 10) {
+          fish.userData.speedX *= -1;
+        }
+        if (Math.abs(fish.position.y) > 5) {
+          fish.userData.speedY *= -1;
+        }
+      });
+      
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Create floating particles
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 20;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      
+      // Random size
+      const size = Math.random() * 5 + 2;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      
+      // Random position
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.top = `${Math.random() * 100}%`;
+      
+      // Random animation duration and delay
+      particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+      particle.style.animationDelay = `${Math.random() * 5}s`;
+      
+      particlesContainer.appendChild(particle);
+    }
+
+    // GSAP animations for text elements
+    document.querySelectorAll('.appear').forEach((element, index) => {
+      gsap.from(element, {
+        opacity: 0,
+        y: 50,
+        duration: 0.8,
+        delay: 0.3 + (index * 0.2)
+      });
+    });
+
+    // Carousel functionality
+const slides = document.querySelectorAll('.slide');
+const navButtons = document.querySelectorAll('.nav-button');
+const prevButton = document.getElementById('prev-button');
+const nextButton = document.getElementById('next-button');
+let currentSlide = 0;
+let isAnimating = false;
+
+function showSlide(index) {
+  if (isAnimating) return;
+  isAnimating = true;
+  
+  // Remove active class from all slides and nav buttons
+  slides.forEach(slide => slide.classList.remove('active'));
+  navButtons.forEach(button => button.classList.remove('active'));
+  
+  // Hide current slide
+  gsap.to(slides[currentSlide], {
+    opacity: 0,
+    y: -50,
+    duration: 0.5,
+    onComplete: () => {
+      // Show new slide
+      slides[index].classList.add('active');
+      navButtons[index].classList.add('active');
+      
+      gsap.fromTo(slides[index], 
+        { opacity: 0, y: 50 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.5,
+          onComplete: () => {
+            isAnimating = false;
+          }
+        }
+      );
+      
+      currentSlide = index;
+      
+      // Animate text elements in the new slide
+      const elements = slides[index].querySelectorAll('h1, h2, p, .skill-item, .button, .profile-picture, .about-image');
+      gsap.fromTo(elements, 
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, delay: 0.2 }
+      );
+    }
+  });
+}
+
+// Add click event listeners to navigation buttons
+navButtons.forEach((button, index) => {
+  button.addEventListener('click', () => {
+    if (currentSlide !== index) {
+      showSlide(index);
+    }
+  });
+});
+
+// Previous and Next button functionality
+prevButton.addEventListener('click', () => {
+  const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
+  showSlide(prevSlide);
+});
+
+nextButton.addEventListener('click', () => {
+  const nextSlide = (currentSlide + 1) % slides.length;
+  showSlide(nextSlide);
+});
+
+// Auto rotate slides
+let slideInterval = setInterval(() => {
+  const nextSlide = (currentSlide + 1) % slides.length;
+  showSlide(nextSlide);
+}, 8000);
+
+// Pause auto-rotation when user interacts
+document.querySelector('.carousel').addEventListener('mouseenter', () => {
+  clearInterval(slideInterval);
+});
+
+document.querySelector('.carousel').addEventListener('mouseleave', () => {
+  slideInterval = setInterval(() => {
+    const nextSlide = (currentSlide + 1) % slides.length;
+    showSlide(nextSlide);
+  }, 8000);
+});
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        let nextSlide = (currentSlide + 1) % slides.length;
+        showSlide(nextSlide);
+      } else if (e.key === 'ArrowLeft') {
+        let prevSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(prevSlide);
+      }
+    });
+  </script>
+</body>
+</html>
